@@ -1,4 +1,5 @@
 import React, {PropTypes, Component} from 'react';
+import {Link} from 'react-router';
 
 
 export default class App extends Component {
@@ -11,6 +12,9 @@ export default class App extends Component {
 
     return (
       <main>
+        <nav>
+          <Link to="/user/admin">Admin</Link>
+        </nav>
         {this.props.children}
       </main>
     );
