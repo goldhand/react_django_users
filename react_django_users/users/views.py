@@ -11,9 +11,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import User
 
 
-# TODO: auth user in ajax
-# class UserDetailView(LoginRequiredMixin, DetailView):
-class UserDetailView(DetailView):
+class UserDetailView(LoginRequiredMixin, DetailView):
     model = User
     # These next two lines tell the view to index lookups by username
     slug_field = 'username'
@@ -21,17 +19,15 @@ class UserDetailView(DetailView):
 
     def render_to_response(self, context, **response_kwargs):
 
-        # if self.request.is_ajax():
-        if self.request.GET.get('format') == 'json':
+        if self.request.is_ajax():
             user = context.get('user')
 
             data = {
-                'data': {
-                    'id': user.id,
-                    'username': user.username,
-                    'name': user.name,
-                    'lastLogin': time.mktime(user.last_login.timetuple()),
-                }
+                'id': user.id,
+                'username': user.username,
+                'name': user.name,
+                'email': user.email,
+                'lastLogin': time.mktime(user.last_login.timetuple()),
             }
 
             return JsonResponse(data, **response_kwargs)

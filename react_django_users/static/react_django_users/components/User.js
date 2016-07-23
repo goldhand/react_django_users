@@ -5,24 +5,26 @@ const User = ({
   username,
   id,
   name,
+  email,
   lastLogin,
 }) => {
   let login;
   if (lastLogin) login = new Date(Number(lastLogin) * 1000).toString();
 
   return (
-  <div id={id}>
-    <p>{username}</p>
-    <p>{id}</p>
-    <p>{name}</p>
-    <p>{login}</p>
-  </div>
+  <ul id={id}>
+    <li>{`username: ${username}`}</li>
+    <li>{`name: ${name}`}</li>
+    <li>{`email: ${email}`}</li>
+    <li>{`last login: ${login}`}</li>
+  </ul>
   );
 };
 User.propTypes = {
-  username: PropTypes.string,
+  username: PropTypes.string.isRequired,
   id: PropTypes.number,
   name: PropTypes.string,
+  email: PropTypes.string.isRequired,
   lastLogin: PropTypes.number,
 };
 export default User;

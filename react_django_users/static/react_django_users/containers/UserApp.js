@@ -3,31 +3,57 @@ import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 
 import * as actionCreators from 'actions/userActions';
+import {getUser, getIsFetching, getIsUpdating} from 'reducers/user';
 import User from 'components/User';
+import UserForm from 'components/UserForm';
 
 
 @connect(
-  state => ({user: state.user}),
+  (state, ownProps) => {
+    const {username} = ownProps.params;
+    return {
+        user: getUser(state.user, username),
+        isFetching: getIsFetching(state.user),
+        isUpdating: getIsUpdating(state.user),
+        username,
+    };
+  },
   dispatch => (bindActionCreators(actionCreators, dispatch)),
 )
 export default class UserApp extends Component {
 
   static propTypes = {
-    params: PropTypes.object,
     fetchUser: PropTypes.func.isRequired,
+    updateUser: PropTypes.func.isRequired,
+    username: PropTypes.string.isRequired,
     user: PropTypes.object,
+    isFetching: PropTypes.bool.isRequired,
+    isUpdating: PropTypes.bool.isRequired,
   }
 
-  componentDidMount() {
-    const {params, fetchUser} = this.props;
+  componentWillMount() {
+    const {username, fetchUser} = this.props;
 
-    fetchUser(params.username);
+    fetchUser(username);
+  }
+
+  handleSubmit = (user) => {
+    const {username, updateUser} = this.props;
+
+    updateUser(username, user);
   }
 
   render() {
-    const {user, params} = this.props;
+    const {user, isFetching, isUpdating, updateUser} = this.props;
+
+    if (isFetching) {
+      return <p>Loading...</p>;
+    }
     return (
-      <User {...user.byId[params.username]} />
+      <div>
+        <User {...user} />
+        <UserForm {...user} updateUser={updateUser} isUpdating={isUpdating} />
+      </div>
     );
   }
 }
